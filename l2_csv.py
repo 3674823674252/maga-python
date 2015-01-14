@@ -3,35 +3,48 @@ from os import linesep
 from sys import maxint
 
 class CSVTable(object):
-  def __init__(filename, headers):
+  def __init__(self, filename, headers):
     file = open(filename).readlines()
     if headers:
-      self.headers = file[0:0].split(',')
-    self.records = file[1:]
+      self.headers = file[0:1][0].split(',')
+      if self.headers:
+        self.headers[-1] = self.headers[-1].replace('\n', '')
+      self.records = file[1:]
+    else:
+      self.records = file[0:]
+    if self.records:
+      for idx, rec in enumerate(self.records):
+        self.records[idx] = rec.split(',')
+        self.records[idx][-1] = self.records[idx][-1].replace('\n', '')
 
-  def flush(dest):
+  def flush(self, dest):
     if not os.path.isfile(dest):
       print '%s is not a file, provide correct file' % dest
-      return
+      return -1
     try:
       file = open(dest, 'w')
       if self.headers:
-        file.write(self.headers.join(',') + linesep)
-      for rec in self.records:
-        file.write(rec.join(',') + linesep)
+        file.write(','.join(self.headers) + linesep)
+        recs = []
+        for rec in self.records:
+          recs.append(','.join(rec))
+        file.write(linesep.join(recs))
+      return 0
     except IOError as e:
       print 'could not write to %s, i/o error %r' % (dest, e)
+      return -1
 
-  def sethead(head):
+  def sethead(self, head):
     self.headers = head
 
-  def sethead(num, head):
+  def sethead(self, num, head):
     if not self.headers:
       return
 
-    self.headers[0] = head
+    if num in self.headers:
+      self.headers[num] = head
 
-  def fillblanks(opt, val):
+  def fillblanks(self, opt, val):
     if opt == 'const' and val:
       for rec in self.records:
         for idx, field in rec:
@@ -44,7 +57,7 @@ class CSVTable(object):
         accum = 0
         for idx, field in rec:
           if field:
-            numset++
+            numset+= 1
             accum += field
 
         if numset == 0:
@@ -65,7 +78,7 @@ class CSVTable(object):
 
         for rec in self.records:
           if rec[clss]:
-            numset++
+            numset+= 1
             accum += rec[clss]
 
         if numset == 0:
@@ -77,7 +90,7 @@ class CSVTable(object):
           if not rec[clss]:
             rec[clss] = mean
 
-  def normalize(opt):
+  def normalize(self, opt):
     if opt == 'maxmin':
       for rec in self.records:
         max = -maxint
@@ -106,7 +119,7 @@ class CSVTable(object):
         for idx, f in rec:
           if not f:
             continue
-          numset++
+          numset+= 1
           accum += f
 
         if numset == 0:
@@ -120,7 +133,7 @@ class CSVTable(object):
 
           rec[idx] = f - mean
 
-  def stats:
+  def stats(self):
     for rec in self.records:
       numset = 0
       accum = 0
@@ -128,7 +141,7 @@ class CSVTable(object):
       for idx, f in rec:
         if not f:
           continue
-        numset++
+        numset+= 1
         accum += f
 
       if numset == 0:
