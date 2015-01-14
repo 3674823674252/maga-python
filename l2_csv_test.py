@@ -43,7 +43,7 @@ class TestCSVClass(unittest.TestCase):
     self.assertEqual(table.flush('wrong_file'), -1)
 
   def testFlushingToRightFileWithoutHeaders (self):
-    table = CSVTable('l2_csv_test_1.txt', 1)
+    table = CSVTable('l2_csv_test_1.txt', 0)
     self.assertEqual(table.flush('l2_csv_test_out.txt'), 0)
     file = open('l2_csv_test_out.txt').readlines()
     self.assertEqual(len(file), 2)
@@ -57,6 +57,32 @@ class TestCSVClass(unittest.TestCase):
     self.assertEqual(len(file), 2)
     self.assertEqual(file[0], 'a,b,c,d\n')
     self.assertEqual(file[1], '0,1,2,3')
+
+  def testSetHeadWithoutPrevHead (self):
+    table = CSVTable('l2_csv_test_1.txt', 0)
+    self.assertFalse(hasattr(table, 'headers'))
+    table.sethead('test-head')
+    self.assertTrue(hasattr(table, 'headers'))
+
+  def testSetHeadWithPrevHead (self):
+    table = CSVTable('l2_csv_test_1.txt', 1)
+    self.assertTrue(hasattr(table, 'headers'))
+    self.assertNotEqual(table.headers, 'test-head')
+    table.sethead('test-head')
+    self.assertTrue(hasattr(table, 'headers'))
+    self.assertEqual(table.headers, 'test-head')
+
+  def testSetAHeadWithoutHead (self):
+    table = CSVTable('l2_csv_test_1.txt', 0)
+    self.assertEqual(table.setahead(0, 'test-head'), -1)
+
+  def testSetAHeadWithoutHead (self):
+    table = CSVTable('l2_csv_test_1.txt', 1)
+    self.assertEqual(table.setahead(0, 'test-head'), 0)
+    self.assertEqual(table.headers[0], 'test-head')
+    self.assertEqual(table.headers[1], 'b')
+    self.assertEqual(table.headers[2], 'c')
+    self.assertEqual(table.headers[3], 'd')
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestCSVClass)
 unittest.TextTestRunner(verbosity=2).run(suite)

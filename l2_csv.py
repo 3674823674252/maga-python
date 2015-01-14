@@ -23,12 +23,12 @@ class CSVTable(object):
       return -1
     try:
       file = open(dest, 'w')
-      if self.headers:
+      if hasattr(self, 'headers'):
         file.write(','.join(self.headers) + linesep)
-        recs = []
-        for rec in self.records:
-          recs.append(','.join(rec))
-        file.write(linesep.join(recs))
+      recs = []
+      for rec in self.records:
+        recs.append(','.join(rec))
+      file.write(linesep.join(recs))
       return 0
     except IOError as e:
       print 'could not write to %s, i/o error %r' % (dest, e)
@@ -37,12 +37,14 @@ class CSVTable(object):
   def sethead(self, head):
     self.headers = head
 
-  def sethead(self, num, head):
+  def setahead(self, num, head):
     if not self.headers:
-      return
+      return -1
 
-    if num in self.headers:
+
+    if num < len(self.headers) and num >= 0:
       self.headers[num] = head
+    return 0
 
   def fillblanks(self, opt, val):
     if opt == 'const' and val:
