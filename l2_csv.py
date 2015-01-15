@@ -145,8 +145,8 @@ class CSVTable(object):
       numset = 0
       accum = 0
 
-      for idx, f in rec:
-        if not f:
+      for idx, f in enumerate(rec):
+        if not isinstance(f, (float, int)):
           continue
         numset+= 1
         accum += f
@@ -158,11 +158,11 @@ class CSVTable(object):
 
       var = []
 
-      for idx, f in rec:
-        if not f:
-          var[idx] = None
+      for idx, f in enumerate(rec):
+        if not isinstance(f, (float, int)):
+          var.append(None)
         else:
-          var[idx] = f - mean
+          var.append(f - mean)
 
       reccopy = sorted(rec[:])
 

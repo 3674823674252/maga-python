@@ -164,5 +164,10 @@ class TestCSVClass(unittest.TestCase):
     self.assertEqual(table.records[2][2], 1)
     self.assertEqual(table.records[2][3], 2)
 
+  def testStatsWorks (self):
+    table = CSVTable('l2_csv_test_2.txt', 1)
+    table.stats()
+    self.assertTrue(True)
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestCSVClass)
 unittest.TextTestRunner(verbosity=2).run(suite)
