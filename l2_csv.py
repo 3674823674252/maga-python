@@ -16,6 +16,11 @@ class CSVTable(object):
       for idx, rec in enumerate(self.records):
         self.records[idx] = rec.split(',')
         self.records[idx][-1] = self.records[idx][-1].replace('\n', '')
+        for idx0, field in enumerate(self.records[idx]):
+          try:
+            self.records[idx][idx0] = int(field)
+          except ValueError:
+            True
 
   def flush(self, dest):
     if not os.path.isfile(dest):
@@ -27,7 +32,7 @@ class CSVTable(object):
         file.write(','.join(self.headers) + linesep)
       recs = []
       for rec in self.records:
-        recs.append(','.join(rec))
+        recs.append(','.join(str(field) for field in rec))
       file.write(linesep.join(recs))
       return 0
     except IOError as e:
@@ -49,8 +54,8 @@ class CSVTable(object):
   def fillblanks(self, opt, val):
     if opt == 'const' and val:
       for rec in self.records:
-        for idx, field in rec:
-          if not field:
+        for idx, field in enumerate(rec):
+          if field == '':
             rec[idx] = val
 
     if opt == 'midall':
