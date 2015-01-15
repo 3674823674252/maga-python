@@ -62,8 +62,8 @@ class CSVTable(object):
       for rec in self.records:
         numset = 0
         accum = 0
-        for idx, field in rec:
-          if field:
+        for idx, field in enumerate(rec):
+          if isinstance(field, int):
             numset+= 1
             accum += field
 
@@ -72,8 +72,8 @@ class CSVTable(object):
 
         mean = accum / numset
 
-        for idx, field in rec:
-          if not field:
+        for idx, field in enumerate(rec):
+          if field == '':
             rec[idx] = mean
 
     if opt == 'midclass':
