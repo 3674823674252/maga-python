@@ -84,7 +84,7 @@ class CSVTable(object):
         accum = 0
 
         for rec in self.records:
-          if rec[clss]:
+          if isinstance(rec[clss], int):
             numset+= 1
             accum += rec[clss]
 
@@ -94,7 +94,7 @@ class CSVTable(object):
         mean = accum / numset
 
         for rec in self.records:
-          if not rec[clss]:
+          if rec[clss] == '':
             rec[clss] = mean
 
   def normalize(self, opt):
@@ -103,8 +103,8 @@ class CSVTable(object):
         max = -maxint
         min = maxint
 
-        for idx, f in rec:
-          if not f:
+        for idx, f in enumerate(rec):
+          if not isinstance(f, int):
             continue
           if f > max:
             max = f
@@ -114,9 +114,9 @@ class CSVTable(object):
         if max == min:
           continue
 
-        for idx, f in rec:
-          if f:
-            rec[idx] = (f - min) / (max - min)
+        for idx, f in enumerate(rec):
+          if isinstance(f, (float, int)):
+            rec[idx] = ( float(f) - min) / (max - min)
 
     if opt == 'var':
       for rec in self.records:
