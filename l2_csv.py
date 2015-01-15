@@ -123,8 +123,8 @@ class CSVTable(object):
         numset = 0
         accum = 0
 
-        for idx, f in rec:
-          if not f:
+        for idx, f in enumerate(rec):
+          if not isinstance(f, (float, int)):
             continue
           numset+= 1
           accum += f
@@ -134,8 +134,8 @@ class CSVTable(object):
 
         mean = accum / numset
 
-        for idx, f in rec:
-          if not f:
+        for idx, f in enumerate(rec):
+          if not isinstance(f, (float, int)):
             continue
 
           rec[idx] = f - mean

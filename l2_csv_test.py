@@ -148,5 +148,21 @@ class TestCSVClass(unittest.TestCase):
     self.assertEqual(table.records[2][2], 0.6666666666666666)
     self.assertEqual(table.records[2][3], 1.0)
 
+  def testNormalizeVar (self):
+    table = CSVTable('l2_csv_test_2.txt', 1)
+    table.normalize('var')
+    self.assertEqual(table.records[0][0], -1)
+    self.assertEqual(table.records[0][1], 0)
+    self.assertEqual(table.records[0][2], 1)
+    self.assertEqual(table.records[0][3], 2)
+    self.assertEqual(table.records[1][0], -2)
+    self.assertEqual(table.records[1][1], '')
+    self.assertEqual(table.records[1][2], 0)
+    self.assertEqual(table.records[1][3], 4)
+    self.assertEqual(table.records[2][0], -1)
+    self.assertEqual(table.records[2][1], -1)
+    self.assertEqual(table.records[2][2], 1)
+    self.assertEqual(table.records[2][3], 2)
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestCSVClass)
 unittest.TextTestRunner(verbosity=2).run(suite)
