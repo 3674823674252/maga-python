@@ -25,20 +25,18 @@ def sort_by_distance(list, item):
 
 
 class KNN(object):
-  def __init__(self, training_set, classification_set, k):
-    self.training_set = training_set
-    self.classification_set = classification_set
+  def __init__(self, k):
     self.k = k
 
-  def classify(self):
-    flattened_training_set = [item for sublist in self.training_set for item in sublist]
+  def classify(self, training_set, classification_set):
+    flattened_training_set = [item for sublist in training_set for item in sublist]
     clazzes = []
-    for item in self.classification_set:
+    for item in classification_set:
       flattened_training_set = sort_by_distance(flattened_training_set, item)
       top_k = flattened_training_set[:self.k]
       classes = []
       for top_k_item in top_k:
-        for idx, chunk in enumerate(self.training_set):
+        for idx, chunk in enumerate(training_set):
           if top_k_item in chunk:
             classes.append(idx)
       clazz = most_common(classes)

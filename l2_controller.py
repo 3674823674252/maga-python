@@ -1,10 +1,11 @@
+from math import floor
 from random import randint
+from datetime import datetime
 
 class Controller(object):
-  def __init__(self, table, algorithm, evaluator):
-    self.records = records
+  def __init__(self, table, algorithm):
+    self.records = table
     self.algorithm = algorithm
-    self.evaluator = evaluator
 
     sizes = []
     percent = 1.0 / len(self.records)
@@ -19,7 +20,7 @@ class Controller(object):
   def toss (self):
     ## Knuth's tossing algorithm
     for i in reversed(range(len(self.records))):
-      seed = randint(0, i)
+      j = randint(0, i)
       self.records[i], self.records[j] = self.records[j], self.records[i]
 
   def definesizes (self, sizes):
@@ -27,7 +28,8 @@ class Controller(object):
       return -1
     if not sizes:
       return -1
-    if len(sizes) >= len(self.records):
+    if len(sizes) > len(self.records):
+      print "LEN SIZES,", len(sizes)
       return -1
     else:
       self.sizes = sizes
@@ -36,14 +38,21 @@ class Controller(object):
   def splitdata (self):
     self.toss()
     chunks = []
-    absolutesizes = floor(len(self.records) * size) for size in self.sizes
+    absolutesizes = [int(floor(len(self.records) * size)) for size in self.sizes]
     pivot = 0
     for size in absolutesizes:
       nextpivot = min(pivot + size, len(self.records))
-      chunks.append(self.records[pivot: nextpivot])
+      chunks.append(self.records[pivot:nextpivot])
       pivot = nextpivot
     return chunks
 
-  def runalgorithm (self):
-    chunks = self.splitdata()
-    
+  def runalgorithm (self, n):
+    while n >= 0:
+      chunks = self.splitdata()
+      teaching_set = chunks[0: len(chunks) - 1]
+      classification_set = chunks[-1]
+      t1 = datetime.now()
+      res = self.algorithm.classify(teaching_set, classification_set)
+      t2 = datetime.now()
+      print "delta: %r" % (t2 - t1)
+      n -= 1

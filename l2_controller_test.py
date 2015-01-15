@@ -2,11 +2,11 @@
 
 import unittest
 from l2_knn import KNN
+from l2_controller import Controller
 
-class TestKNNClass(unittest.TestCase):
-  def testFromKNNForHumans (self):
-    training_set = [
-      [
+class TestControllClass(unittest.TestCase):
+  def testRuns (self):
+    data = [
         [303, 3],
         [298, 3],
         [277, 3],
@@ -16,8 +16,6 @@ class TestKNNClass(unittest.TestCase):
         [311, 3],
         [302, 3],
         [305, 3],
-      ],
-      [
         [370, 1],
         [377, 4],
         [382, 1],
@@ -25,21 +23,16 @@ class TestKNNClass(unittest.TestCase):
         [359, 1],
         [366, 1],
         [373, 4],
-        [371, 3]
-      ],
-      [
+        [371, 3],
         [200, 10],
-        [201, 11]
-      ]
+        [201, 11],
+        [373, 1]
     ]
-    classification_set = [
-      [373, 1]
-    ]
+
     k = 3
     knn = KNN(k)
-    clazzes = knn.classify(training_set, classification_set)
-    self.assertEqual(len(clazzes), 1)
-    self.assertEqual(clazzes[0], 1)
+    controller = Controller(data, knn)
+    controller.runalgorithm(5)
 
-suite = unittest.TestLoader().loadTestsFromTestCase(TestKNNClass)
+suite = unittest.TestLoader().loadTestsFromTestCase(TestControllClass)
 unittest.TextTestRunner(verbosity=2).run(suite)
